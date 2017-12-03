@@ -1,0 +1,71 @@
+<html>
+<head>
+  <script type="text/javascript" src="smoothie.js"></script>
+
+  <style>
+  body {
+      background-color: black;
+  }
+
+  #bottom{
+    float:right;
+    display: block;
+    margin-top: 30px;
+  }
+  #product_name{
+    text-align: center;
+    color:white;
+  }
+  #watermark{
+    color:white;
+    position:absolute;
+    bottom:0;
+    left:50%;
+    margin-left: -25%;
+
+  }
+  </style>
+</head>
+
+<body>
+<canvas id="chart" width="1024" height="768"></canvas>
+<script type="text/javascript">
+
+
+
+var smoothie = new SmoothieChart({millisPerPixel:45,maxValueScale:1.04,labels:{fontSize:20,precision:5},timestampFormatter:SmoothieChart.timeFormatter}),
+    canvas = document.getElementById('smoothie-chart');
+
+smoothie.streamTo(document.getElementById("chart"),3000);
+var line1 = new TimeSeries();
+
+// Add a random value to each line every second
+// setInterval(function() {
+//   line1.append(new Date().getTime(), Math.random());
+//   // line2.append(new Date().getTime(), Math.random());
+// }, 3000);
+
+// Add to SmoothieChart
+smoothie.addTimeSeries(line1, {lineWidth:2,strokeStyle:'#00ff00',fillStyle:'rgba(176,221,139,0.30)'});
+var conn = new WebSocket("ws://localhost:1337");
+      conn.onmessage = function(evt) {
+        console.log(evt.data);
+        line1.append(new Date().getTime(), parseFloat(evt.data));
+      };
+      conn.onclose = function(evt) {
+      };
+
+</script>
+<!--
+<div id="bottom">
+<a id="product_name" >  Temperature Monitoring System </a>
+</div>
+</br>
+<a  id="watermark">  CYBER-PHYSICAL SYSTEMS SECURITY TERM PROJECT </a>
+!-->
+</body>
+
+
+
+
+</html>

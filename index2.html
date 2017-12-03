@@ -1,0 +1,99 @@
+<html>
+<head>
+<script type="text/javascript" src="moment.js"></script>
+<script type="text/javascript" src="Chart.js"></script>
+<script type="text/javascript" src="chartjs-plugin-streaming.js"></script>
+
+  <style>
+  body {
+      /*background-color: black;*/
+  }
+
+
+  </style>
+</head>
+
+<body>
+<canvas id="chart" ></canvas>
+<script type="text/javascript">
+
+var conn = new WebSocket("ws://localhost:1337");
+var last_data =0;
+var ctx = document.getElementById('chart').getContext('2d');
+var chart = new Chart(ctx, {
+  type: 'line',
+  data: {
+    datasets: [{
+      label: "Temperature",
+      borderColor: 'rgb(255, 99, 132)',
+      backgroundColor: 'rgba(255, 99, 132, 0.5)',
+      fill: true,
+      data: []
+    }]
+  },
+  options: {
+    title:{
+                    display:true,
+                    text:'Chart.js Line Chart'
+                },
+                tooltips: {
+                    mode: 'index',
+                    intersect: false,
+                },
+                hover: {
+                    mode: 'nearest',
+                    intersect: true
+                },
+    scales: {
+      xAxes: [{
+        type: 'realtime',
+
+      }]
+    },
+
+    plugins: {
+      streaming: {
+        delay: 2000,
+        onRefresh: function(chart) {
+          chart.data.datasets.forEach(function(dataset) {
+            dataset.data.push({
+              x: Date.now(),
+              y: last_data
+            });
+          });
+        }
+      }
+    }
+
+  }
+});
+console.log(Date.now());
+// Add a random value to each line every second
+// setInterval(function() {
+//   line1.append(new Date().getTime(), Math.random());
+//   // line2.append(new Date().getTime(), Math.random());
+// }, 3000);
+
+// Add to SmoothieChart
+
+      conn.onmessage = function(evt) {
+        console.log(evt.data);
+        last_data= parseFloat(evt.data);
+      };
+      conn.onclose = function(evt) {
+      };
+
+</script>
+<!--
+<div id="bottom">
+<a id="product_name" >  Temperature Monitoring System </a>
+</div>
+</br>
+<a  id="watermark">  CYBER-PHYSICAL SYSTEMS SECURITY TERM PROJECT </a>
+!-->
+</body>
+
+
+
+
+</html>
