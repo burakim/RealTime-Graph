@@ -28,7 +28,7 @@ var chart1 = new Chart(ctx, {
 
         type: 'line',
         data: { datasets: [{
-    
+
             label: "Temperature",
             borderColor: 'rgb(255, 99, 132)',
             backgroundColor: 'rgba(255, 99, 132, 0.5)',
@@ -41,19 +41,19 @@ var chart1 = new Chart(ctx, {
         options: {
           scales: {
             yAxes: [{
-
+              id: 'first-y-axis',
               type: 'linear',
                  ticks: {
-                max: 500,
+                max: 100,
                 min: 0,
-                stepSize: 0.5
+                stepSize: 10
             }
              }],
 
             xAxes: [{ type: 'realtime' }] },
           title:{
             display:true,
-            text:'Chart.js Line Chart'
+            text:'Temperature Chart'
           },
           tooltips: {
             mode: 'index',
@@ -63,16 +63,10 @@ var chart1 = new Chart(ctx, {
             mode: 'nearest',
             intersect: true
           },
-          scales: {
-            xAxes: [{
-              type: 'realtime',
 
-            }],
-
-          },
           plugins: {
             streaming: {
-              delay: 2000,
+              delay: 1000,
               onRefresh: function(chart) {
                 chart.data.datasets.forEach(function(dataset) {
                   dataset.data.push({
